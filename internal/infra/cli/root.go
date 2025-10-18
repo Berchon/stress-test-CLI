@@ -34,7 +34,7 @@ func NewRootCmd() *cobra.Command {
 
 			fmt.Printf("Executing stress test for URL: %s . . .\n", url)
 
-			httpSvc := httpService.NewHTTPService(10 * time.Second)
+			httpSvc := httpService.NewHTTPService(5 * time.Second)
 			statsSvc := statistics.NewStatisticsService()
 			reportSvc := report.NewConsoleReportService()
 
