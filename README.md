@@ -105,21 +105,55 @@ git clone git@github.com:Berchon/stress-test-CLI.git
 cd stress-test-cli
 ```
 
-### ▶️ Rodar via Go
+### <img src="assets/go_logo.svg" height="16px"> Rodar via Go
 
+Para rodar o projeto diretamente no seu ambiente de desenvolvimento com Go, use o seguinte comando:
 ```bash
 go run cmd/cli/main.go --url=https://www.google.com --requests=600 --concurrency=30
 ```
+>Basta substituir a `URL`, o número de requisições (`--requests`) e a concorrência (`--concurrency`) pelos parâmetros desejados.
 
-💾 Passo 2 — Rodar via Docker
+### 🐳 Rodar via Docker
 
+Se preferir rodar o projeto dentro de um container Docker, siga os passos abaixo:
+
+**1. Build da imagem Docker:**
 ```bash
 # Build da imagem
 docker build -t stress-test-cli .
+```
 
+**2. Executar o container:**
+```bash
 # Executar o container
 docker run stress-test-cli --url=https://www.google.com --requests=600 --concurrency=30
 ```
+Esse comando executa o teste de carga diretamente no Docker, utilizando os parâmetros passados via CLI.
+
+### 🔗 Testando com httpbin.org
+**httpbin.org** é uma ferramenta útil para simulação de APIs e pode ser usada para testar latência, timeout e status codes de maneira controlada. Abaixo estão alguns exemplos para você testar diferentes cenários:
+
+* **Simular latência (tempo de resposta configurado):**
+```bash
+go run cmd/cli/main.go --url=https://httpbin.org/delay/1 --requests=20 --concurrency=5
+```
+A URL `https://httpbin.org/delay/1` retorna um **HTTP 200** após um atraso de 1 segundos, permitindo testar a latência das requisições.
+
+* **Simular timeout (requisição que excede o tempo de espera):**
+```bash
+go run cmd/cli/main.go --url=https://httpbin.org/delay/6 --requests=20 --concurrency=5
+```
+
+Aqui, a URL `https://httpbin.org/delay/6` faz com que a resposta demore 6 segundos, forçando `timeout` nas requisições (já configurado para 5 segundos no cliente HTTP).
+
+* **Testar diferentes status codes aleatórios:**
+```bash
+go run cmd/cli/main.go --url=https://httpbin.org/status/200,300,400,500 --requests=100 --concurrency=5
+```
+
+A URL `https://httpbin.org/status/200,300,400,500` retorna status codes aleatórios entre **200**, **300**, **400**, e **500**, o que é útil para testar como o sistema lida com diferentes respostas HTTP.
+
+Esses exemplos são extremamente úteis para testar como a aplicação reage a diferentes cenários de resposta da API e comportamento de rede.
 
 ## 🧰 Tecnologias utilizadas
 
