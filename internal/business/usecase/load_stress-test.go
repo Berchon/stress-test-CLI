@@ -20,7 +20,7 @@ type loadTestUseCase struct {
 }
 
 type LoadTestUseCase interface {
-	StartLoadTest(targetURL string, totalRequests int, concurrency int) error //(*dto.Report, error)
+	StartLoadTest(targetURL string, totalRequests int, concurrency int) error
 }
 
 func NewLoadTestUseCase(
@@ -35,44 +35,35 @@ func NewLoadTestUseCase(
 	}
 }
 
-func (uc *loadTestUseCase) StartLoadTest(targetURL string, totalRequests int, concurrency int) error { //(*dto.Report, error) {
-	// TODO: Validate input parameters (url format, totalRequests > 0, concurrency > 0)
+func (uc *loadTestUseCase) StartLoadTest(targetURL string, totalRequests int, concurrency int) error {
 	if err := validateInput(targetURL, totalRequests, concurrency); err != nil {
 		return err
 	}
 
 	startTime := time.Now()
 
-	// TODO: Create channels / worker pool to handle concurrency
 	resultsChan := make(chan entity.RequestResult, totalRequests)
 	var wg sync.WaitGroup
 
-	// Launch workers
 	for i := 0; i < concurrency; i++ {
 		wg.Add(1)
 		go uc.worker(i, targetURL, totalRequests/concurrency, resultsChan, &wg)
 	}
 
-	// Wait for all workers to finish
 	wg.Wait()
 	close(resultsChan)
 
-	// TODO: Collect all RequestResult into a slice
 	var allResults []entity.RequestResult
 	for r := range resultsChan {
 		allResults = append(allResults, r)
 	}
 
-	// TODO: Aggregate results into DTO Report (success/fail counts, latencies, etc.)
 	report := uc.statisticsService.AggregateResults(allResults, time.Since(startTime), targetURL)
 
 	uc.reportService.Print(report)
 	return nil
 }
 
-// TODO: Launch goroutines to perform HTTP requests
-//
-//	Each goroutine should record a RequestResult
 func (uc *loadTestUseCase) worker(workerID int, targetURL string, requestsPerWorker int, results chan<- entity.RequestResult, wg *sync.WaitGroup) {
 	defer wg.Done()
 
@@ -82,7 +73,6 @@ func (uc *loadTestUseCase) worker(workerID int, targetURL string, requestsPerWor
 			StatusCode: status,
 			Latency:    latency,
 			Error:      err,
-			// TODO: Optionally add response size, body snippet, etc.
 		}
 	}
 }

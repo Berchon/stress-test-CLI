@@ -57,7 +57,6 @@ func computeLatencyStatsPerGroup(grouped map[string][]float64) map[string]dto.La
 		stats[status] = computeStats(latencies)
 	}
 
-	// Compute total latency across all requests
 	var allLatencies []float64
 	for _, lat := range grouped {
 		allLatencies = append(allLatencies, lat...)
@@ -67,33 +66,6 @@ func computeLatencyStatsPerGroup(grouped map[string][]float64) map[string]dto.La
 	return stats
 }
 
-// countSuccessAndFailures counts successful (HTTP 200) and failed requests
-//
-//	func countSuccessAndFailures(results []entity.RequestResult) (successful int, failed map[string]int) {
-//		failed = map[string]int{
-//			"400":    0,
-//			"500":    0,
-//			"Others": 0,
-//			"Errors": 0,
-//		}
-//		for _, r := range results {
-//			if r.Error != nil {
-//				failed["Errors"]++
-//				continue
-//			}
-//			switch {
-//			case r.StatusCode >= 200 && r.StatusCode < 300:
-//				successful++
-//			case r.StatusCode >= 400 && r.StatusCode < 500:
-//				failed["400"]++
-//			case r.StatusCode >= 500 && r.StatusCode < 600:
-//				failed["500"]++
-//			default:
-//				failed["Others"]++
-//			}
-//		}
-//		return
-//	}
 func countSuccessAndFailures(results []entity.RequestResult) (successful int, failed dto.FailedRequestsBreakdown) {
 	for _, r := range results {
 		if r.Error != nil {
