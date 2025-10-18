@@ -8,6 +8,7 @@ import (
 
 	httpService "github.com/Berchon/stress-test-cli/internal/business/service"
 	"github.com/Berchon/stress-test-cli/internal/business/usecase"
+	"github.com/Berchon/stress-test-cli/internal/infra/report"
 	"github.com/Berchon/stress-test-cli/internal/infra/statistics"
 	"github.com/spf13/cobra"
 )
@@ -37,8 +38,9 @@ func NewRootCmd() *cobra.Command {
 
 			httpSvc := httpService.NewHTTPService(10 * time.Second)
 			statsSvc := statistics.NewStatisticsService()
+			reportSvc := report.NewConsoleReportService()
 
-			uc := usecase.NewLoadTestUseCase(httpSvc, statsSvc)
+			uc := usecase.NewLoadTestUseCase(httpSvc, statsSvc, reportSvc)
 
 			err := uc.StartLoadTest(url, requests, concurrency)
 			if err != nil {

@@ -9,23 +9,29 @@ import (
 
 	"github.com/Berchon/stress-test-cli/internal/business/entity"
 	httpService "github.com/Berchon/stress-test-cli/internal/business/service"
+	"github.com/Berchon/stress-test-cli/internal/infra/report"
 	"github.com/Berchon/stress-test-cli/internal/infra/statistics"
 )
 
 type loadTestUseCase struct {
 	httpService       httpService.HTTPService
 	statisticsService statistics.StatisticsService
+	reportService     report.ReportService
 }
 
 type LoadTestUseCase interface {
 	StartLoadTest(targetURL string, totalRequests int, concurrency int) error //(*dto.Report, error)
 }
 
-// NewLoadTestUseCase creates a new LoadTestUseCase instance
-func NewLoadTestUseCase(httpService httpService.HTTPService, statisticsService statistics.StatisticsService) LoadTestUseCase {
+func NewLoadTestUseCase(
+	httpService httpService.HTTPService,
+	statisticsService statistics.StatisticsService,
+	reportService report.ReportService,
+) LoadTestUseCase {
 	return &loadTestUseCase{
 		httpService:       httpService,
 		statisticsService: statisticsService,
+		reportService:     reportService,
 	}
 }
 
@@ -58,8 +64,9 @@ func (uc *loadTestUseCase) StartLoadTest(targetURL string, totalRequests int, co
 	}
 
 	// TODO: Aggregate results into DTO Report (success/fail counts, latencies, etc.)
-	_ = uc.statisticsService.AggregateResults(allResults, time.Since(startTime), targetURL)
+	report := uc.statisticsService.AggregateResults(allResults, time.Since(startTime), targetURL)
 
+	uc.reportService.Print(report)
 	return nil
 }
 
