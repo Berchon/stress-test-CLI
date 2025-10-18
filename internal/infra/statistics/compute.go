@@ -1,6 +1,8 @@
 package statistics
 
 import (
+	"sort"
+
 	"github.com/Berchon/stress-test-cli/internal/business/dto"
 	"gonum.org/v1/gonum/stat"
 )
@@ -58,6 +60,9 @@ func computeStdDev(values []float64, mean float64) float64 {
 }
 
 func computePercentiles(values []float64, percentiles []int) map[int]float64 {
+	// Values must be sorted ascending before calling stat.Quantile to avoid panic.
+	sort.Float64s(values)
+
 	result := make(map[int]float64)
 	for _, p := range percentiles {
 		result[p] = stat.Quantile(float64(p)/100.0, stat.Empirical, values, nil)
