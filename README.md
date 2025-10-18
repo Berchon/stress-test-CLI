@@ -101,7 +101,7 @@ Report generated at:  Sat, 18 Oct 2025 04:57:16 -03
 ### 💾 Clonar repositório
 
 ```bash
-git clone <repositorio git>
+git clone git@github.com:Berchon/stress-test-CLI.git
 cd stress-test-cli
 ```
 
