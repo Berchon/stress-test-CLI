@@ -24,41 +24,41 @@ func (r *consoleReportService) Print(report *dto.Report) {
 	}
 
 	fmt.Println()
-	fmt.Println("Stress Test Report")
-	fmt.Println("------------------")
-	fmt.Printf("Target URL:           %s\n", report.TargetURL)
-	fmt.Printf("Total Duration:       %.3fs\n", report.Duration.Seconds())
-	fmt.Printf("Total Requests:       %d\n\n", report.TotalRequests)
+	fmt.Println(" Stress Test Report")
+	fmt.Println("--------------------")
+	fmt.Printf(" Target URL:           %s\n", report.TargetURL)
+	fmt.Printf(" Total Duration:       %.3fs\n", report.Duration.Seconds())
+	fmt.Printf(" Total Requests:       %d\n\n", report.TotalRequests)
 
 	fmt.Printf("Successful Requests:  %d (HTTP 200)\n\n", report.SuccessfulRequests)
 
 	fmt.Println("Failed Requests:")
-	fmt.Println("  Status Code | Count")
-	fmt.Println("  -------------------")
-	fmt.Printf("      400     | %d\n", report.FailedRequests.HTTP400)
-	fmt.Printf("      500     | %d\n", report.FailedRequests.HTTP500)
-	fmt.Printf("    Others    | %d\n", report.FailedRequests.Others)
-	fmt.Printf("    Errors    | %d\n\n", report.FailedRequests.Errors)
+	fmt.Println("  Status Code |  Count")
+	fmt.Println(" ------------------------")
+	fmt.Printf("  400         | %8d\n", report.FailedRequests.HTTP400)
+	fmt.Printf("  500         | %8d\n", report.FailedRequests.HTTP500)
+	fmt.Printf("  Others      | %8d\n", report.FailedRequests.Others)
+	fmt.Printf("  Errors      | %8d\n\n", report.FailedRequests.Errors)
 
 	fmt.Println("Latency (ms):")
-	fmt.Println("  Status Code | Avg     | Max     | Min     | StdDev")
-	fmt.Println("  -----------------------------------------------")
+	fmt.Println("  Status Code |   Avg    |   Max    |   Min    |  StdDev")
+	fmt.Println(" ---------------------------------------------------------")
 
 	statusOrder := []string{"200", "400", "500", "Others", "Total", "Errors"}
 	for _, code := range statusOrder {
 		stats := report.Latency[code]
-		fmt.Printf("      %-6s | %8.1f | %8.1f | %8.1f | %8.1f\n",
+		fmt.Printf("  %-11s | %8.1f | %8.1f | %8.1f | %8.1f\n",
 			code, stats.Average, float64(stats.Max), float64(stats.Min), stats.StdDev)
 	}
 	fmt.Println()
 
 	fmt.Println("Percentiles (ms):")
-	fmt.Println("  Status Code | P50     | P90     | P95     | P99")
-	fmt.Println("  -----------------------------------------------")
+	fmt.Println("  Status Code |   P50    |   P90    |   P95    |   P99")
+	fmt.Println(" ---------------------------------------------------------")
 
 	for _, code := range statusOrder {
 		stats := report.Latency[code]
-		fmt.Printf("      %-6s | %8.1f | %8.1f | %8.1f | %8.1f\n",
+		fmt.Printf("  %-11s | %8.1f | %8.1f | %8.1f | %8.1f\n",
 			code, stats.P50, stats.P90, stats.P95, stats.P99)
 	}
 

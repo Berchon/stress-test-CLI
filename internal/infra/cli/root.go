@@ -32,9 +32,7 @@ func NewRootCmd() *cobra.Command {
 				log.Fatalf("Invalid parameters: %v", err)
 			}
 
-			fmt.Printf("Executing stress test for URL: %s\n", url)
-			fmt.Println()
-			fmt.Println()
+			fmt.Printf("Executing stress test for URL: %s . . .\n", url)
 
 			httpSvc := httpService.NewHTTPService(10 * time.Second)
 			statsSvc := statistics.NewStatisticsService()
